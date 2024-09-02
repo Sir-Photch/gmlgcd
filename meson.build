@@ -1,5 +1,5 @@
 project('gmlgcd', 'c',
-  version : '1.4',
+  version : '1.4-devel',
   default_options : ['warning_level=3']
 )
 
