@@ -1,9 +1,17 @@
 project('gmlgcd', 'c',
-  version : '0.1',
+  version : '1.0',
   default_options : ['warning_level=3']
 )
 
 fs = import('fs')
+
+configure_file(
+  input:  'version.h.in',
+  output: 'version.h',
+  configuration: {
+    'version': meson.project_version()
+  }
+)
 
 if get_option('buildtype') in ['debug', 'debugoptimized']
   add_project_arguments('-DDEBUG_BUILD', language: 'c')

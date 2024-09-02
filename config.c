@@ -17,6 +17,7 @@
  */
 
 #include "platform.h"
+#include "version.h"
 
 #include <time.h>
 #include <unistd.h>
@@ -45,8 +46,15 @@
 static _Noreturn void
 usage(void)
 {
-	printf("%s [-v -c <path/to/gmlgcd.conf>]\n",
+	printf("%s [-vV -c <path/to/gmlgcd.conf>]\n",
 	    getprogname());
+	exit(0);
+}
+
+static _Noreturn void
+version(void)
+{
+	printf("%s v" VERSION_STR "\n", getprogname());
 	exit(0);
 }
 
@@ -105,7 +113,7 @@ config_parse(struct config *cfg, int argc, char *const *argv)
 	memset(cfg, 0, sizeof(struct config));
 	__log_verbose = false;
 
-	while ((c = getopt(argc, argv, "Svc:")) != -1) {
+	while ((c = getopt(argc, argv, "SVvc:")) != -1) {
 		switch (c) {
 		case 'c':
 			if (!optarg)
@@ -115,6 +123,8 @@ config_parse(struct config *cfg, int argc, char *const *argv)
 		case 'v':
 			__log_verbose = true;
 			break;
+		case 'V':
+			version();
 		case 'S':
 			cfg->danger_no_sandbox = true;
 			break;
