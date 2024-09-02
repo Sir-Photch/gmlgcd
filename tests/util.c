@@ -37,12 +37,12 @@ int
 strnchr_test(void)
 {
 	static const char test0[] = "pter: hello",
-					  test1[] = ": yes",
-					  test2[] = "lorem ipsum dolor sit amet: santificetur",
-					  test3[] = "horld:",
-					  test4[] = "hello: world:!";
+			  test1[] = ": yes",
+			  test2[] = "lorem ipsum dolor sit amet: santificetur",
+			  test3[] = "horld:",
+			  test4[] = "hello: world:!";
 	const char *p;
-	
+
 	p = strnchr(test0, sizeof(test0), ':');
 	assert(p == test0 + 4);
 

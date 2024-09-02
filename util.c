@@ -126,7 +126,8 @@ sockaddrs_to_str(char *buf, socklen_t n, const union sockaddrs *s, int af)
 }
 
 /* c in first n characters of s */
-char *strnchr(const char *s, size_t n, char c)
+char *
+strnchr(const char *s, size_t n, char c)
 {
 	char *cp;
 
