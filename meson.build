@@ -3,8 +3,6 @@ project('gmlgcd', 'c',
   default_options : ['warning_level=3']
 )
 
-fs = import('fs')
-
 configure_file(
   input:  'version.h.in',
   output: 'version.h',
@@ -41,19 +39,4 @@ executable(
   install : true
 )
 
-systemddir = get_option('systemddir')
-prefix = get_option('prefix')
-sysconfdir = get_option('sysconfdir')
-
 install_man('gmlgcd.8')
-install_data('template.gmi', install_dir: prefix + '/share/doc/gmlgcd')
-
-if not fs.exists('/' + sysconfdir + '/gmlgcd.conf')
-  install_data('gmlgcd.conf', install_dir: sysconfdir)
-else
-  message('/' + sysconfdir + '/gmlgcd.conf exists, not overwriting')
-endif
-
-if systemddir == ''
-  install_data('gmlgcd.service', install_dir: systemddir)
-endif
