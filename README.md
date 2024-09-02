@@ -29,6 +29,10 @@ While I am using this on Linux, I paid attention to make it compatible with and 
 Platform specific functionality like landlock(7) is replaced by pledge(2) and unveil(2).
 Your mileage may vary, I haven't thouroughly tested gmlgcd on that platform, however.
 
+### Archlinux
+
+A PKGBUILD on the AUR exists: [gmlgcd](https://aur.archlinux.org/packages/gmlgcd)
+
 ## Usage
 
 Edit `/etc/gmlgcd.conf` or set a different config file with `gmlgcd -c my.conf`.
