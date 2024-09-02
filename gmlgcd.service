@@ -1,0 +1,24 @@
+[Unit]
+Description=The gemlog comment daemon
+
+[Service]
+User=gmlgcd
+ExecStart=/usr/local/bin/gmlgcd
+Restart=on-failure
+
+#ProtectSystem=strict
+#ReadWritePaths=/path/to/comments
+
+RuntimeDirectory=gmlgcd
+RuntimeDirectoryMode=0770
+UMask=0017
+
+StateDirectory=gmlgcd
+StateDirectoryMode=0700
+
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectControlGroups=yes
+
+[Install]
+WantedBy=multi-user.target

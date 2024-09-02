@@ -1,0 +1,6 @@
+# Comments - <title>
+
+=> /path/to/commentfile.gmi go back
+=> /add-comment/path/to/commentfile.gmi add comment
+Tip: prefix your reply with `myusername: `, to set the name displayed in your comment.
+

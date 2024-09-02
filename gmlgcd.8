@@ -1,0 +1,46 @@
+.Dd September 1, 2024
+.Dt GMLGCD 8
+.Os
+.Sh NAME
+.Nm gmlgcd
+.Nd The gemlog comment daemon
+.Sh SYNOPSIS
+.Nm
+.Bk -words
+.Op Fl v
+.Op Fl c Ar config
+.Ek
+.Sh DESCRIPTION
+.Nm
+opens up a fastcgi socket and accepts connections from a gemini webserver.
+Connections will be handled as comment requests on a given file.
+.Ek
+.Sh OPTIONS
+.Bl -tag -width 14m
+.It Fl c Ar config
+Specifies the configuration file.
+The default is
+.Pa /etc/gmlgcd.conf .
+.It Fl v
+Turn on verbose logging.
+.El
+.Sh EXAMPLES
+It is possible to integrate
+.Nm
+with 
+.Xr gmid 8 ,
+by adding a location block to a server directive of
+.Xr gmid.conf 5 ,
+that forwards request to
+.Nm :
+.Bd -literal -offset indent
+location "/add-comment/*" {
+    fastcgi socket "/run/gmlgcd/fcgi.sock"
+}
+.Ed
+.Sh SEE ALSO
+.Xr gmid.conf 5
+.Sh AUTHOR
+.Nm
+is developed by
+.An github.com/Sir-Photch Aq Mt sir-photch@posteo.me .

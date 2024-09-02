@@ -1,0 +1,10 @@
+{
+    "editor.defaultFormatter": "webfreak.advanced-local-formatters",
+    "editor.formatOnSave": false,
+    "advancedLocalFormatters.formatters": [
+        {
+            "command": ["./format.fish"],
+            "languages": ["c", "cpp"]
+        }
+    ]
+}
