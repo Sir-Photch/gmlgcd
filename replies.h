@@ -23,7 +23,6 @@
 #define	COMMENTS_NOT_ENABLED "51 comments not enabled\r\n"
 #define COMMENTS_NOT_ALLOWED "51 comments not allowed\r\n"
 #define CERTIFICATE_REQUIRED "60 certificate required\r\n"
-#define USERNAME_TOO_LONG "59 username too long\r\n"
 #define USERNAME_MISSING "59 username missing\r\n"
 #define EMPTY_COMMENT "59 empty comment\r\n"
 #define HEADERS_NOT_ALLOWED "59 headers not allowed\r\n"
