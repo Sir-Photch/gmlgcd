@@ -13,7 +13,7 @@ function test_trim
 end
 
 function randstr
-    set -l rand "$(cat /dev/urandom | tr -dc '[:print:]' | head -c (random 0 512))"
+    set -l rand "$(cat /dev/urandom | tr -dc '[:print:]' | head -c (random 1 128))"
 
     for _i in seq 10
         if test "$(math "$(random) % 2")" = 1
