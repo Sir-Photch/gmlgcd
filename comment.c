@@ -49,14 +49,17 @@ commentf(char formatted_comment[COMMENTS_MAX], const struct config *cfg,
 	const char *message, *nextline, *username;
 
 	*errstatus = NULL;
-	username = NULL;
 
 	col = strnchr(user.gemini_search_string, cfg->username_max, ':');
 
 	if (col && col[1] == ' ') {
+		message = col + 1;
 		*col = '\0';
+
 		username = trim_whitespace(user.gemini_search_string);
 	} else if (user.name) {
+		message = user.gemini_search_string;
+
 		if (strstr(user.name, CN_PREFIX))
 			username = user.name + sizeof(CN_PREFIX) - 1;
 		else
@@ -66,11 +69,6 @@ commentf(char formatted_comment[COMMENTS_MAX], const struct config *cfg,
 		*errstatus = USERNAME_MISSING;
 		return false;
 	}
-
-	if (col)
-		message = col + 1;
-	else
-		message = user.gemini_search_string;
 
 	while (*message != '\0' && isspace(*message))
 		message++;
