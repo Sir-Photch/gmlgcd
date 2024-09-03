@@ -45,6 +45,14 @@ struct config {
 
 	bool allow_links;
 	bool danger_no_sandbox;
+
+	struct {
+		enum quarantine_mode {
+			ALWAYS, ON_ERROR, NEVER
+		} mode;
+		size_t max_failures;
+		double expiry_minutes;
+	} quarantine;
 };
 
 void config_parse(struct config *, int, char *const *);
