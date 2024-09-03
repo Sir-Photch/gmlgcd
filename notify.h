@@ -18,36 +18,8 @@
 
 #pragma once
 
-#include <stdbool.h>
-#include <stddef.h>
-#include <netinet/in.h>
+#include "config.h"
+#include "user.h"
 
-struct config {
-	char *uri_subpath;
-	char *comments_dir;
-	char *persistent_dir;
-	sa_family_t af;
-	union {
-		char *runtime_dir;
-		struct {
-			union {
-				struct in_addr  v4;
-				struct in6_addr v6;
-			} ip;
-			unsigned short port;
-		} tcp;
-	} listen;
+void notify(const struct config *, unsigned short, const struct user_id *, const char *);
 
-	size_t username_max;
-	size_t lines_max;
-	size_t comment_verbs_len;
-	char **comment_verbs;
-
-	bool allow_links;
-	bool danger_no_sandbox;
-
-	char *notify_path;
-};
-
-void config_parse(struct config *, int, char *const *);
-void config_free(struct config *);
