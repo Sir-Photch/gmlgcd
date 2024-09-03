@@ -24,7 +24,8 @@
 #include "log.h"
 
 void
-notify(const struct config *cfg, unsigned short rid, const struct user_id *user, const char *commentfile)
+notify(const struct config *cfg, unsigned short rid,
+    const struct user_id *user, const char *commentfile)
 {
 	pid_t cpid, wpid;
 	int status;
@@ -47,24 +48,27 @@ notify(const struct config *cfg, unsigned short rid, const struct user_id *user,
             #endif
 			    );
 
-            if (wpid == -1) {
-                warnli(rid, "waitpid");
-                return;
-            }
+			if (wpid == -1) {
+				warnli(rid, "waitpid");
+				return;
+			}
 
-            if (WIFEXITED(status))
-                dbgxli(rid, "child exited: %s", strerror(WEXITSTATUS(status)));
-            else if (WIFSIGNALED(status))
-                warnxli(rid, "child killed: %s", strsignal(WTERMSIG(status)));
-            else if (WIFSTOPPED(status))
-                dbgxli(rid, "child stopped: %s", strsignal(WSTOPSIG(status)));
+			if (WIFEXITED(status))
+				dbgxli(rid, "child exited: %s",
+				    strerror(WEXITSTATUS(status)));
+			else if (WIFSIGNALED(status))
+				warnxli(rid, "child killed: %s",
+				    strsignal(WTERMSIG(status)));
+			else if (WIFSTOPPED(status))
+				dbgxli(rid, "child stopped: %s",
+				    strsignal(WSTOPSIG(status)));
             #ifdef WIFCONTINUED
-            else if (WIFCONTINUED(status))
-                dbgxli(rid, "child resumed");
+			else if (WIFCONTINUED(status))
+				dbgxli(rid, "child resumed");
             #endif
-            else
-                dbgxli(rid, "unexpected child status (0x%x)", status);
-
+			else
+				dbgxli(rid, "unexpected child status (0x%x)",
+				    status);
 		} while (!WIFEXITED(status) && !WIFSIGNALED(status));
 	}
 }

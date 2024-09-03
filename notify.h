@@ -21,5 +21,5 @@
 #include "config.h"
 #include "user.h"
 
-void notify(const struct config *, unsigned short, const struct user_id *, const char *);
-
+void notify(const struct config *, unsigned short, const struct user_id *,
+    const char *);
