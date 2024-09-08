@@ -32,7 +32,7 @@ struct quarantine_entry {
 	struct user_id user;
 	time_t last_failure;
 	size_t failures;
-    bool is_blocked;
+	bool is_blocked;
 	TAILQ_ENTRY(quarantine_entry) entries;
 };
 

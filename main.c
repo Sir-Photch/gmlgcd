@@ -198,14 +198,11 @@ generate_response(struct evbuffer *out, unsigned short rid,
 	qent = quarantine_get_entry(s->quarantine, user.id);
 	time(&now);
 
-	if (!qent && s->cfg.quarantine.mode == ALWAYS)
-		qent = quarantine_add(s->quarantine, &user.id);
-
 	if (qent) {
 		expired_min = difftime(now,
 		    qent->last_failure) / 60.0;
 
-		if (qent->failures > s->cfg.quarantine.max_failures && expired_min < s->cfg.quarantine.expiry_minutes) {
+		if (qent->failures > 5 && expired_min < 5.0) {
 			qent->last_failure = now;
 			qent->failures++;
 

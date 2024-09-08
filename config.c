@@ -35,21 +35,17 @@
 #define COMMENTS_DIR 	"comments-dir"
 #define RUNTIME_DIR	"runtime-dir"
 #define TCP		"tcp"
-#define THOST		"host"
-#define TPORT		"port"
+#define HOST		"host"
+#define PORT		"port"
 #define PERSISTENT_DIR	"persistent-dir"
 #define	USERNAME_MAX	"username-max"
 #define LINES_MAX	"lines-max"
 #define COMMENT_VERBS	"comment-verbs"
 #define ALLOW_LINKS	"allow-links"
-#define QUARANTINE "quarantine"
-#define QMODE "mode"
-#define QMAX_FAILURES "max-failures"
-#define QEXPIRY_MINUTES "expiry-minutes"
 #define HELP_SUBPATH "help-subpath"
 #define REQUIRE_CERT "require-user-cert"
 
-#define VALIDATE_NATURAL_OPTS (USERNAME_MAX "|" LINES_MAX "|" QUARANTINE "." QMODE)
+#define VALIDATE_NATURAL_OPTS (USERNAME_MAX "|" LINES_MAX)
 
 static _Noreturn void
 usage(void)
@@ -86,42 +82,14 @@ config_validate_natural(cfg_t *c, cfg_opt_t *o)
 	return 0;
 }
 
-static int
-config_parse_quarantine_mode(cfg_t *cfg, cfg_opt_t *opt, const char *value,
-    void *result)
-{
-	enum quarantine_mode *qmode = result;
-
-	if (strcmp(value, "always") == 0)
-		*qmode = ALWAYS;
-	else if (strcmp(value, "on-error") == 0)
-		*qmode = ON_ERROR;
-	else if (strcmp(value, "never") == 0)
-		*qmode = NEVER;
-	else {
-		cfg_error(cfg,
-		    "bad value for '"
-		    QMODE "': %s | possible values are: " "'always' 'on-error' 'never'",
-		    value);
-		return -1;
-	}
-
-	return 0;
-}
-
 void
 config_parse(struct config *cfg, int argc, char *const *argv)
 {
 	const char *cfg_path = CONF_PATH_DEFAULT;
 	cfg_opt_t tcp_opts[] = {
-		CFG_STR(THOST, "127.0.0.1", CFGF_NONE),
-		CFG_INT(TPORT, 0, CFGF_NONE),
+		CFG_STR(HOST, "127.0.0.1", CFGF_NONE),
+		CFG_INT(PORT, 0, CFGF_NONE),
 		CFG_END()
-	};
-	cfg_opt_t quarantine_opts[] = {
-		CFG_PTR_CB(QMODE, "on-error", CFGF_NONE, config_parse_quarantine_mode, free),
-		CFG_INT(QMAX_FAILURES, 5, CFGF_NONE),
-		CFG_FLOAT(QEXPIRY_MINUTES, 5.0, CFGF_NONE)
 	};
 	cfg_opt_t file_opts[] = {
 		CFG_BOOL(VERBOSE, false, CFGF_NONE),
@@ -139,13 +107,11 @@ config_parse(struct config *cfg, int argc, char *const *argv)
 		CFG_STR_LIST(COMMENT_VERBS, NULL, CFGF_LIST),
 
 		CFG_BOOL(ALLOW_LINKS, false, CFGF_NONE),
-		CFG_BOOL(REQUIRE_CERT, true, CFGF_NONE),
-
-		CFG_SEC(QUARANTINE, quarantine_opts, CFGF_NONE),
+		CFG_BOOL(REQUIRE_CERT, true,  CFGF_NONE),
 
 		CFG_END()
 	};
-	cfg_t *file_cfg, *tcp_cfg, *q_cfg;
+	cfg_t *file_cfg, *tcp_cfg;
 	const char *host;
 	unsigned int i;
 	char c;
@@ -200,17 +166,17 @@ config_parse(struct config *cfg, int argc, char *const *argv)
 
 	if (cfg_size(file_cfg, TCP) > 0) {
 		tcp_cfg = cfg_getsec(file_cfg, TCP);
-		host = cfg_getstr(tcp_cfg, THOST);
+		host = cfg_getstr(tcp_cfg, HOST);
 
 		if (inet_pton(AF_INET, host, &cfg->listen.tcp.ip.v4) == 1)
 			cfg->af = AF_INET;
 		else if (inet_pton(AF_INET6, host, &cfg->listen.tcp.ip.v6) == 1)
 			cfg->af = AF_INET6;
 		else
-			errxl(1, "bad '" TCP "." THOST "': %s", host);
+			errxl(1, "bad '" TCP "." HOST "': %s", host);
 
-		if ((cfg->listen.tcp.port = cfg_getint(tcp_cfg, TPORT)) == 0)
-			errxl(1, "'" TCP "." TPORT "' unspecified");
+		if ((cfg->listen.tcp.port = cfg_getint(tcp_cfg, PORT)) == 0)
+			errxl(1, "'" TCP "." PORT "' unspecified");
 
 		// port range not checked
 
@@ -221,11 +187,6 @@ config_parse(struct config *cfg, int argc, char *const *argv)
 	} else
 		errxl(1,
 		    "'" TCP "' section or '" RUNTIME_DIR "' option required");
-
-	q_cfg = cfg_getsec(file_cfg, QUARANTINE);
-	cfg->quarantine.mode = *(enum quarantine_mode *)cfg_getptr(q_cfg, QMODE);
-	cfg->quarantine.max_failures = cfg_getint(q_cfg, QMAX_FAILURES);
-	cfg->quarantine.expiry_minutes = cfg_getfloat(q_cfg, QEXPIRY_MINUTES);
 
 	if (!cfg->comments_dir)
 		errxl(1, "'" COMMENTS_DIR "' unset");
