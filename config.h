@@ -26,6 +26,8 @@ struct config {
 	char *uri_subpath;
 	char *comments_dir;
 	char *persistent_dir;
+	char *help_subpath;
+
 	sa_family_t af;
 	union {
 		char *runtime_dir;
@@ -45,6 +47,7 @@ struct config {
 
 	bool allow_links;
 	bool danger_no_sandbox;
+	bool require_user_cert;
 
 	struct {
 		enum quarantine_mode {

@@ -46,6 +46,10 @@
 #define QMODE "mode"
 #define QMAX_FAILURES "max-failures"
 #define QEXPIRY_MINUTES "expiry-minutes"
+#define HELP_SUBPATH "help-subpath"
+#define REQUIRE_CERT "require-user-cert"
+
+#define VALIDATE_NATURAL_OPTS (USERNAME_MAX "|" LINES_MAX "|" QUARANTINE "." QMODE)
 
 static _Noreturn void
 usage(void)
@@ -125,6 +129,7 @@ config_parse(struct config *cfg, int argc, char *const *argv)
 		CFG_SIMPLE_STR(URI_SUBPATH, &cfg->uri_subpath),
 		CFG_SIMPLE_STR(COMMENTS_DIR, &cfg->comments_dir),
 		CFG_SIMPLE_STR(PERSISTENT_DIR, &cfg->persistent_dir),
+		CFG_SIMPLE_STR(HELP_SUBPATH, &cfg->help_subpath),
 
 		CFG_STR(RUNTIME_DIR, NULL, CFGF_NONE),
 		CFG_SEC(TCP, tcp_opts, CFGF_NODEFAULT),
@@ -134,6 +139,7 @@ config_parse(struct config *cfg, int argc, char *const *argv)
 		CFG_STR_LIST(COMMENT_VERBS, NULL, CFGF_LIST),
 
 		CFG_BOOL(ALLOW_LINKS, false, CFGF_NONE),
+		CFG_BOOL(REQUIRE_CERT, true, CFGF_NONE),
 
 		CFG_SEC(QUARANTINE, quarantine_opts, CFGF_NONE),
 
@@ -169,10 +175,8 @@ config_parse(struct config *cfg, int argc, char *const *argv)
 
 	file_cfg = cfg_init(file_opts, CFGF_NONE);
 	cfg_set_error_function(file_cfg, config_parse_errorcb);
-	cfg_set_validate_func(file_cfg, USERNAME_MAX "|" LINES_MAX,
+	cfg_set_validate_func(file_cfg, VALIDATE_NATURAL_OPTS,
 	    config_validate_natural);
-
-		// TODO fix validate function
 
 	if (cfg_parse(file_cfg, cfg_path) == CFG_FILE_ERROR)
 		errl(1, "opening %s failed", cfg_path);
@@ -192,6 +196,7 @@ config_parse(struct config *cfg, int argc, char *const *argv)
 			    COMMENT_VERBS, i));
 	}
 	cfg->allow_links = cfg_getbool(file_cfg, ALLOW_LINKS);
+	cfg->require_user_cert = cfg_getbool(file_cfg, REQUIRE_CERT);
 
 	if (cfg_size(file_cfg, TCP) > 0) {
 		tcp_cfg = cfg_getsec(file_cfg, TCP);
