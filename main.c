@@ -195,8 +195,10 @@ generate_response(struct evbuffer *out, unsigned short rid,
 		    sizeof(CERTIFICATE_REQUIRED));
 	}
 
-	qent = quarantine_get_entry(s->quarantine, user.id);
-	time(&now);
+	if (hash) {
+		qent = quarantine_get_entry(s->quarantine, user.id);
+		time(&now);
+	}
 
 	if (qent) {
 		expired_min = difftime(now,
@@ -206,7 +208,8 @@ generate_response(struct evbuffer *out, unsigned short rid,
 			qent->last_failure = now;
 			qent->failures++;
 
-			msgli(rid, "ratelimited: %lu failures", qent->failures);
+			msgli(rid, "ratelimited: %lu failures",
+			    qent->failures);
 
 			return fcgi_write_stdout(out, rid, SLOW_DOWN,
 			    sizeof(SLOW_DOWN));
@@ -215,11 +218,13 @@ generate_response(struct evbuffer *out, unsigned short rid,
 
 	if (!check_url_path(gemini_url_path, rid, commenting_path,
 	    sizeof(commenting_path), &requested_file, &errstr, &s->cfg)) {
-		if (!qent)
-			qent = quarantine_add(s->quarantine, &user.id);
+		if (hash) {
+			if (!qent)
+				qent = quarantine_add(s->quarantine, &user.id);
 
-		qent->last_failure = now;
-		qent->failures++;
+			qent->last_failure = now;
+			qent->failures++;
+		}
 
 		return fcgi_write_stdout(out, rid, errstr, strlen(errstr));
 	}

@@ -56,7 +56,7 @@ commentf(char *buf, ssize_t n, const char *username, const char *hash,
 	    "%s:\n%s\n--- %d-%02d-%02d %d:%02d (UTC)\n\n",
 	    verb, msg,
 	    utc.tm_year + 1900, utc.tm_mon + 1, utc.tm_mday,
-		utc.tm_hour, utc.tm_min);
+	    utc.tm_hour, utc.tm_min);
 
 	return 0 < n && l < (size_t)n;
 }
