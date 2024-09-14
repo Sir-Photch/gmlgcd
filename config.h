@@ -40,14 +40,22 @@ struct config {
 		} tcp;
 	} listen;
 
-	size_t username_max;
-	size_t lines_max;
-	size_t comment_verbs_len;
-	char **comment_verbs;
+	struct {
+		struct {
+			size_t n;
+			char **p;
+		} verbs;
 
-	bool allow_links;
+		size_t lines_max;
+		size_t username_max;
+		
+		bool allow_links;
+		enum authmode {
+			NONE, REQUIRE_USERNAME, REQUIRE_CERT
+		} auth;
+	} comment;
+
 	bool danger_no_sandbox;
-	bool require_user_cert;
 };
 
 void config_parse(struct config *, int, char *const *);

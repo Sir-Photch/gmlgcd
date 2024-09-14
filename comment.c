@@ -37,10 +37,10 @@ commentf(char formatted_comment[COMMENTS_MAX], const struct config *cfg,
     unsigned short rid,
     struct user_input user, bool allow_links, const char **errstatus)
 {
-	const char **comment_verbs = cfg->comment_verbs ?
-	    (const char **)cfg->comment_verbs : DEFAULT_COMMENT_VERBS;
-	size_t comment_verbs_len = cfg->comment_verbs ?
-	    cfg->comment_verbs_len : DEFAULT_COMMENT_VERBS_LEN;
+	const char **comment_verbs = cfg->comment.verbs.p ?
+	    (const char **)cfg->comment.verbs.p : DEFAULT_COMMENT_VERBS;
+	size_t comment_verbs_len = cfg->comment.verbs.p ?
+	    cfg->comment.verbs.n : DEFAULT_COMMENT_VERBS_LEN;
 	struct tm utc;
 	char *col;
 	time_t now;
@@ -50,7 +50,7 @@ commentf(char formatted_comment[COMMENTS_MAX], const struct config *cfg,
 
 	*errstatus = NULL;
 
-	col = strnchr(user.gemini_search_string, cfg->username_max, ':');
+	col = strnchr(user.gemini_search_string, cfg->comment.username_max, ':');
 
 	if (col && col[1] == ' ') {
 		message = col + 1;
@@ -82,7 +82,7 @@ commentf(char formatted_comment[COMMENTS_MAX], const struct config *cfg,
 	nextline = message;
 	n_lines = 0;
 	do {
-		if (++n_lines > cfg->lines_max) {
+		if (++n_lines > cfg->comment.lines_max) {
 			warnxli(rid, "too many lines (%lu) from %s", n_lines,
 			    username);
 			*errstatus = TOO_MANY_LINES;

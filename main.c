@@ -189,7 +189,7 @@ generate_response(struct evbuffer *out, unsigned short rid,
 		return false;
 	}
 
-	if (!hash && s->cfg.require_user_cert) {
+	if (!hash && s->cfg.comment.auth == REQUIRE_CERT) {
 		msgli(rid, "missing certificate");
 		return fcgi_write_stdout(out, rid, CERTIFICATE_REQUIRED,
 		    sizeof(CERTIFICATE_REQUIRED));
@@ -226,7 +226,7 @@ generate_response(struct evbuffer *out, unsigned short rid,
 
 	errstr = NULL;
 	if (user.gemini_search_string &&
-	    commentf(formatted_comment, &s->cfg, rid, user, s->cfg.allow_links,
+	    commentf(formatted_comment, &s->cfg, rid, user, s->cfg.comment.allow_links,
 	    &errstr)) {
 		if ((commenting_fd = open(commenting_path,
 		    O_WRONLY | O_APPEND)) == -1) {
