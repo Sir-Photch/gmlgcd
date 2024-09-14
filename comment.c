@@ -32,35 +32,33 @@ static const char *DEFAULT_COMMENT_VERBS[DEFAULT_COMMENT_VERBS_LEN] = {
 	"says", "thinks", "argues", "writes"
 };
 
-static int
-commentf(char *s, ssize_t n, const char *username, const char *hash,
+static bool
+commentf(char *buf, ssize_t n, const char *username, const char *hash,
     const char *verb, const char *msg, struct tm utc)
 {
 	size_t l;
 
-	l = snprintf(s, n, "### %s ", username);
+	n -= l = snprintf(buf, n, "### %s ", username);
 
-	n -= l;
 	if (n < 1)
 		return l;
 
-	s += l;
+	buf += l;
 
 	if (*hash != '\0') {
-		l += snprintf(s, n, "(%s) ", hash);
-		n -= l;
+		n -= l = snprintf(buf, n, "(%s) ", hash);
 		if (n < 1)
 			return l;
-		s += l;
+		buf += l;
 	}
 
-	l += snprintf(s, n,
+	l = snprintf(buf, n,
 	    "%s:\n%s\n--- %d-%02d-%02d %d:%02d (UTC)\n\n",
 	    verb, msg,
 	    utc.tm_year + 1900, utc.tm_mon + 1, utc.tm_mday,
 		utc.tm_hour, utc.tm_min);
 
-	return l;
+	return 0 < n && l < (size_t)n;
 }
 
 bool
