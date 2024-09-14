@@ -123,7 +123,7 @@ config_parse(struct config *cfg, int argc, char *const *argv)
 		CFG_INT(CLINES_MAX, 4, CFGF_NONE),
 		CFG_INT(CUSERNAME_MAX, 25, CFGF_NONE),
 		CFG_BOOL(CALLOW_LINKS, false, CFGF_NONE),
-		CFG_PTR_CB(CAUTH, "require-username", CFGF_NONE, config_parse_comment_auth, free),
+		CFG_INT_CB(CAUTH, REQUIRE_USERNAME, CFGF_NONE, config_parse_comment_auth),
 		CFG_END()
 	};
 	cfg_opt_t file_opts[] = {
@@ -181,7 +181,7 @@ config_parse(struct config *cfg, int argc, char *const *argv)
 	comment_cfg = cfg_getsec(file_cfg, COMMENT);
 	cfg_set_validate_func(comment_cfg, CVALIDATE, config_validate_natural);
 
-	n = cfg->comment.verbs.n = cfg_size(file_cfg, CVERBS);
+	n = cfg->comment.verbs.n = cfg_size(comment_cfg, CVERBS);
 	if (n > 0) {
 		cfg->comment.verbs.p = calloc(cfg->comment.verbs.n,
 		    sizeof(char *));
@@ -194,7 +194,7 @@ config_parse(struct config *cfg, int argc, char *const *argv)
 	cfg->comment.username_max = cfg_getint(comment_cfg, CUSERNAME_MAX);
 
 	cfg->comment.allow_links = cfg_getbool(comment_cfg, CALLOW_LINKS);
-	cfg->comment.auth = *(enum authmode *)cfg_getptr(comment_cfg, CAUTH);
+	cfg->comment.auth = cfg_getint(comment_cfg, CAUTH);
 
 	if (cfg_size(file_cfg, TCP) > 0) {
 		tcp_cfg = cfg_getsec(file_cfg, TCP);
