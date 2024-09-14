@@ -31,6 +31,6 @@ struct user_input {
 	char *gemini_search_string;
 };
 
-bool commentf(char[COMMENTS_MAX], const struct config *, unsigned short,
+bool format_comment(char [COMMENTS_MAX], const struct config *, unsigned short,
     struct user_input,
     bool, const char **);

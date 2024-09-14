@@ -32,8 +32,39 @@ static const char *DEFAULT_COMMENT_VERBS[DEFAULT_COMMENT_VERBS_LEN] = {
 	"says", "thinks", "argues", "writes"
 };
 
+static int
+commentf(char *s, ssize_t n, const char *username, const char *hash,
+    const char *verb, const char *msg, struct tm utc)
+{
+	size_t l;
+
+	l = snprintf(s, n, "### %s ", username);
+
+	n -= l;
+	if (n < 1)
+		return l;
+
+	s += l;
+
+	if (*hash != '\0') {
+		l += snprintf(s, n, "(%s) ", hash);
+		n -= l;
+		if (n < 1)
+			return l;
+		s += l;
+	}
+
+	l += snprintf(s, n,
+	    "%s:\n%s\n--- %d-%02d-%02d %d:%02d (UTC)\n\n",
+	    verb, msg,
+	    utc.tm_year + 1900, utc.tm_mon + 1, utc.tm_mday,
+		utc.tm_hour, utc.tm_min);
+
+	return l;
+}
+
 bool
-commentf(char formatted_comment[COMMENTS_MAX], const struct config *cfg,
+format_comment(char formatted_comment[COMMENTS_MAX], const struct config *cfg,
     unsigned short rid,
     struct user_input user, bool allow_links, const char **errstatus)
 {
@@ -46,11 +77,12 @@ commentf(char formatted_comment[COMMENTS_MAX], const struct config *cfg,
 	time_t now;
 	size_t n_lines;
 	ssize_t nontruncated_len;
-	const char *message, *nextline, *username;
+	const char *message, *nextline, *username, *verb;
 
 	*errstatus = NULL;
 
-	col = strnchr(user.gemini_search_string, cfg->comment.username_max, ':');
+	col = strnchr(user.gemini_search_string, cfg->comment.username_max,
+	    ':');
 
 	if (col && col[1] == ' ') {
 		message = col + 1;
@@ -64,6 +96,9 @@ commentf(char formatted_comment[COMMENTS_MAX], const struct config *cfg,
 			username = user.name + sizeof(CN_PREFIX) - 1;
 		else
 			username = user.name;
+	} else if (cfg->comment.auth == NONE) {
+		message = user.gemini_search_string;
+		username = "anon";
 	} else {
 		warnxli(rid, "username missing");
 		*errstatus = USERNAME_MISSING;
@@ -108,27 +143,19 @@ commentf(char formatted_comment[COMMENTS_MAX], const struct config *cfg,
 	time(&now);
 	gmtime_r(&now, &utc);
 
-	nontruncated_len = snprintf(formatted_comment, COMMENTS_MAX,
-	    "### %s (%s) %s:\n%s\n--- %d-%02d-%02d %d:%02d (UTC)\n\n", username,
-	    user.id.hash, comment_verbs[rand() % comment_verbs_len],
-	    message, utc.tm_year + 1900, utc.tm_mon + 1, utc.tm_mday,
-	    utc.tm_hour, utc.tm_min);
+	verb = comment_verbs[rand() % comment_verbs_len];
 
-//	nontruncated_len = snprintf(formatted_comment, COMMENTS_MAX,
-//	    "## %s (%s) %s:\n### %d-%02d-%02d %d:%02d (UTC)\n%s\n\n", username,
-//	    user.id.hash, COMMENT_VERBS[rand() % COMMENT_VERBS_LEN],
-//	    utc.tm_year + 1900, utc.tm_mon + 1, utc.tm_mday, utc.tm_hour,
-//	    utc.tm_min, message);
+	memset(formatted_comment, 0, COMMENTS_MAX);
 
-//	nontruncated_len = snprintf(formatted_comment, COMMENTS_MAX,
-//	    "### On %d-%02d-%02d %d:%d (UTC), %s (%s) %s:\n%s\n\n", utc.tm_year + 1900,
-//	    utc.tm_mon + 1, utc.tm_mday, utc.tm_hour, utc.tm_min, username,
-//	    hash, COMMENT_VERBS[rand() % COMMENT_VERBS_LEN],
-//	    message);
+	nontruncated_len = commentf(formatted_comment, COMMENTS_MAX, username,
+	    user.id.hash, verb, message, utc);
 
-	if (nontruncated_len > COMMENTS_MAX) {
-		warnxli(rid, "COMMENTS_MAX exceeded by %s (%s)", username,
-		    user.id.hash);
+	if (nontruncated_len >= COMMENTS_MAX) {
+		if (*user.id.hash != '\0')
+			warnxli(rid, "COMMENTS_MAX exceeded by %s (%s)",
+			    username, user.id.hash);
+		else
+			warnxli(rid, "COMMENTS_MAX exceeded by %s", username);
 	}
 
 	return true;

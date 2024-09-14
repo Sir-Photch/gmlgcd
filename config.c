@@ -88,7 +88,8 @@ config_validate_natural(cfg_t *c, cfg_opt_t *o)
 }
 
 static int
-config_parse_comment_auth(cfg_t *cfg, cfg_opt_t *opt, const char *value, void *result)
+config_parse_comment_auth(cfg_t *cfg, cfg_opt_t *opt, const char *value,
+    void *result)
 {
 	enum authmode *authmode = result;
 
@@ -99,7 +100,9 @@ config_parse_comment_auth(cfg_t *cfg, cfg_opt_t *opt, const char *value, void *r
 	else if (strcmp(value, "require-cert") == 0)
 		*authmode = REQUIRE_CERT;
 	else {
-		cfg_error(cfg, "Bad %s, possible values are: { 'none', 'require-username', 'require-cert' }", cfg_opt_name(opt));
+		cfg_error(cfg,
+		    "Bad %s, possible values are: { 'none', 'require-username', 'require-cert' }",
+		    cfg_opt_name(opt));
 		return -1;
 	}
 
@@ -121,7 +124,7 @@ config_parse(struct config *cfg, int argc, char *const *argv)
 		CFG_INT(CUSERNAME_MAX, 25, CFGF_NONE),
 		CFG_BOOL(CALLOW_LINKS, false, CFGF_NONE),
 		CFG_PTR_CB(CAUTH, "require-username", CFGF_NONE, config_parse_comment_auth, free),
-		CFG_END()	
+		CFG_END()
 	};
 	cfg_opt_t file_opts[] = {
 		CFG_BOOL(VERBOSE, false, CFGF_NONE),
@@ -180,9 +183,11 @@ config_parse(struct config *cfg, int argc, char *const *argv)
 
 	n = cfg->comment.verbs.n = cfg_size(file_cfg, CVERBS);
 	if (n > 0) {
-		cfg->comment.verbs.p = calloc(cfg->comment.verbs.n, sizeof(char*));
-		for (i = 0; i < n; ++i) 
-			cfg->comment.verbs.p[i] = strdup(cfg_getnstr(comment_cfg, CVERBS, i));
+		cfg->comment.verbs.p = calloc(cfg->comment.verbs.n,
+		    sizeof(char *));
+		for (i = 0; i < n; ++i)
+			cfg->comment.verbs.p[i] = strdup(
+			    cfg_getnstr(comment_cfg, CVERBS, i));
 	}
 
 	cfg->comment.lines_max = cfg_getint(comment_cfg, CLINES_MAX);

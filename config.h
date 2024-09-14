@@ -48,7 +48,7 @@ struct config {
 
 		size_t lines_max;
 		size_t username_max;
-		
+
 		bool allow_links;
 		enum authmode {
 			NONE, REQUIRE_USERNAME, REQUIRE_CERT
