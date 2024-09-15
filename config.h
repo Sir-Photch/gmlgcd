@@ -28,6 +28,8 @@ struct config {
 	char *persistent_dir;
 	char *help_subpath;
 
+	char *help_template;
+
 	sa_family_t af;
 	union {
 		char *runtime_dir;

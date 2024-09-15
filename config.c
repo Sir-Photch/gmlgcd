@@ -42,7 +42,7 @@
 #define THOST			"host"
 #define TPORT			"port"
 
-#define HELP_SUBPATH 	"help-subpath"
+#define HELP_TEMPLATE	"help-template-file"
 
 #define COMMENT			"comment"
 #define CVERBS			"verbs"
@@ -115,7 +115,7 @@ config_parse(struct config *cfg, int argc, char *const *argv)
 	const char *cfg_path = CONF_PATH_DEFAULT;
 	cfg_opt_t tcp_opts[] = {
 		CFG_STR(THOST, "127.0.0.1", CFGF_NONE),
-		CFG_INT(TPORT, 1860, CFGF_NONE),
+		CFG_INT(TPORT, 0, CFGF_NONE),
 		CFG_END()
 	};
 	cfg_opt_t comment_opts[] = {
@@ -132,10 +132,11 @@ config_parse(struct config *cfg, int argc, char *const *argv)
 		CFG_SIMPLE_STR(URI_SUBPATH, &cfg->uri_subpath),
 		CFG_SIMPLE_STR(COMMENTS_DIR, &cfg->comments_dir),
 		CFG_SIMPLE_STR(PERSISTENT_DIR, &cfg->persistent_dir),
-		CFG_SIMPLE_STR(HELP_SUBPATH, &cfg->help_subpath),
 
 		CFG_STR(RUNTIME_DIR, NULL, CFGF_NONE),
 		CFG_SEC(TCP, tcp_opts, CFGF_NODEFAULT),
+
+		CFG_STR(HELP_TEMPLATE, NULL, CFGF_NONE),
 
 		CFG_SEC(COMMENT, comment_opts, CFGF_NONE),
 
