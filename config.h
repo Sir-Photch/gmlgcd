@@ -26,7 +26,6 @@ struct config {
 	char *uri_subpath;
 	char *comments_dir;
 	char *persistent_dir;
-	char *help_subpath;
 
 	char *help_template;
 

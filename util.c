@@ -18,10 +18,12 @@
 
 #include "platform.h"
 
+#include <cstdarg>
 #include <errno.h>
 #include <ctype.h>
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <stdarg.h>
 
 #include "util.h"
 
@@ -143,4 +145,21 @@ strnchr(const char *s, size_t n, char c)
 		return NULL;
 
 	return cp;
+}
+
+char *
+strrep(const char *s, ...)
+{
+	const char *tok, *rep;
+	va_list args;
+
+	va_start(args, s);
+
+	while ((tok = va_arg(args, const char *)) != NULL) {
+		rep = va_arg(args, const char *);
+
+		
+	}
+
+	va_end(args);
 }

@@ -240,6 +240,9 @@ config_free(struct config *c)
 	free(c->comments_dir);
 	free(c->persistent_dir);
 
+	if (c->help_template)
+		free(c->help_template);
+
 	if (c->af == AF_UNIX && c->listen.runtime_dir)
 		free(c->listen.runtime_dir);
 

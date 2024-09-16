@@ -34,3 +34,4 @@ bool  path_combine(char *, size_t, const char *, const char *);
 char *trim_whitespace(char *s);
 bool  sockaddrs_to_str(char *, socklen_t, const union sockaddrs *, int);
 char *strnchr(const char *, size_t, char);
+char *strrep(const char *, ...);
