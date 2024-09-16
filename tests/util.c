@@ -92,6 +92,20 @@ strnchr_test(void)
 }
 
 int
+strrep_test(void)
+{
+	const char *ret;
+	static const char test0[] = "hello my name is <name> and i am <verb> to meet you";
+
+	ret = strrep(test0, "<name>", "peter", "<verb>", "pleased", (char *)NULL);
+
+	if (strcmp(ret, "hello my name is peter and I am pleased to meet you") != 0)
+		return 1;
+
+	return 0;
+}
+
+int
 main(int argc, char **argv)
 {
 	(void)argc;
@@ -106,6 +120,8 @@ main(int argc, char **argv)
 		return path_combine_stdin(buf);
 	else if (strcmp(argv[1], "strnchr") == 0)
 		return strnchr_test();
+	else if (strcmp(argv[1], "strrep") == 0) 
+		return strrep_test();
 	else {
 		fprintf(stderr, "usage");
 		return 1;

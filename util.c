@@ -151,15 +151,38 @@ char *
 strrep(const char *s, ...)
 {
 	const char *tok, *rep;
+	char *str, *rest, *tokp, *tmp;
+	size_t n;
 	va_list args;
 
 	va_start(args, s);
 
-	while ((tok = va_arg(args, const char *)) != NULL) {
-		rep = va_arg(args, const char *);
+	str = strdup(s);
 
-		
+	while ((tok = va_arg(args, char *)) != NULL &&
+	    (rep = va_arg(args, char *)) != NULL) {
+		tokp = strstr(str, tok);
+
+		if (!tokp)
+			continue;
+
+		*tokp = '\0';
+
+		rest = tokp + strlen(tok);
+
+		n = strlen(str) + strlen(rep) + strlen(rest) + 1;
+
+		tmp = calloc(n, sizeof(char));
+
+		strlcat(tmp, str, n);
+		strlcat(tmp, rep, n);
+		strlcat(tmp, rest, n);
+
+		free(str);
+		str = tmp;
 	}
 
 	va_end(args);
+
+	return str;
 }
