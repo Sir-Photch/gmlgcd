@@ -18,7 +18,6 @@
 
 #include "platform.h"
 
-#include <cstdarg>
 #include <errno.h>
 #include <ctype.h>
 #include <sys/socket.h>
@@ -125,26 +124,6 @@ sockaddrs_to_str(char *buf, socklen_t n, const union sockaddrs *s, int af)
 	}
 
 	return true;
-}
-
-/* c in first n characters of s */
-char *
-strnchr(const char *s, size_t n, char c)
-{
-	char *cp;
-
-	if (!s)
-		return NULL;
-
-	cp = strchr(s, c);
-
-	if (!cp)
-		return NULL;
-
-	if (cp - s > (ssize_t)n - 1)
-		return NULL;
-
-	return cp;
 }
 
 char *

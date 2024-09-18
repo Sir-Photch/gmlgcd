@@ -79,8 +79,7 @@ format_comment(char formatted_comment[COMMENTS_MAX], const struct config *cfg,
 
 	*errstatus = NULL;
 
-	col = strnchr(user.gemini_search_string, cfg->comment.username_max,
-	    ':');
+	col = memchr(user.gemini_search_string, ':', cfg->comment.username_max);
 
 	if (col && col[1] == ' ') {
 		message = col + 1;

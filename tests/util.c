@@ -34,64 +34,6 @@ path_combine_stdin(char buf[BUFSIZE])
 }
 
 int
-strnchr_test(void)
-{
-	static const char test0[] = "pter: hello",
-			  test1[] = ": yes",
-			  test2[] = "lorem ipsum dolor sit amet: santificetur",
-			  test3[] = "horld:",
-			  test4[] = "hello: world:!";
-	const char *p;
-
-	p = strnchr(test0, sizeof(test0), ':');
-	assert(p == test0 + 4);
-
-	p = strnchr(test0, 1, ':');
-	assert(!p);
-
-	p = strnchr(test0, 0, ':');
-	assert(!p);
-
-	p = strnchr(test0, 4, ':');
-	assert(!p);
-
-	p = strnchr(test0, 5, ':');
-	assert(p == test0 + 4);
-
-	p = strnchr(test1, sizeof(test1), ':');
-	assert(p == test1);
-
-	p = strnchr(test1, 0, ':');
-	assert(!p);
-
-	p = strnchr(test1, 1, ':');
-	assert(p == test1);
-
-	p = strnchr(test2, sizeof(test2), ':');
-	assert(p == test2 + 26);
-
-	p = strnchr(test2, 26, ':');
-	assert(!p);
-
-	p = strnchr(test2, 27, ':');
-	assert(p == test2 + 26);
-
-	p = strnchr(test3, sizeof(test3), ':');
-	assert(p == test3 + 5);
-
-	p = strnchr(test3, 4, ':');
-	assert(!p);
-
-	p = strnchr(test3, 6, ':');
-	assert(p == test3 + 5);
-
-	p = strnchr(test4, sizeof(test4), ':');
-	assert(p == test4 + 5);
-
-	return 0;
-}
-
-int
 strrep_test(void)
 {
 	const char *ret;
@@ -118,8 +60,6 @@ main(int argc, char **argv)
 		return trim_stdin(buf);
 	else if (strcmp(argv[1], "combine") == 0)
 		return path_combine_stdin(buf);
-	else if (strcmp(argv[1], "strnchr") == 0)
-		return strnchr_test();
 	else if (strcmp(argv[1], "strrep") == 0) 
 		return strrep_test();
 	else {

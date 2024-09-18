@@ -30,7 +30,6 @@ if host_machine.system() == 'linux'
   executable('test_util', sources: ['util.c', 'tests/util.c'], install: false)
   test('util-trim', find_program('tests/util-trim.fish'))
   test('util-path-combine', find_program('tests/util-path-combine.fish'))
-  test('util-strnchr', find_program('tests/util-strnchr.fish'))
 endif
 
 executable(
