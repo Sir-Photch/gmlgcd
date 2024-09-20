@@ -1,3 +1,5 @@
+**moved to sourcehut:** https://git.sr.ht/~chrs/gmlgcd
+
 # gmlgcd
 
 gmlgcd is your gemlog companion enabling your visitors to interact with your posts.
